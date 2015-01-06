@@ -6,14 +6,16 @@
 
 	public class ToV extends Sprite
 	{
-		public var STAGE_WIDTH:int = 1000;
-		public var STAGE_HEIGHT:int = 500;
+		public var STAGE_WIDTH:int = GameData.STAGE_WIDTH;
+		public var STAGE_HEIGHT:int = GameData.STAGE_HEIGHT;
 
 		public var CREATING_INF:Boolean = false;
 
-		public var base:Sprite = new feild_barracks  ;
+		public var base:Sprite = new field_barracks  ;
 		public var spawn_x:Number = 0;
 		public var spawn_y:Number = 0;
+
+		public var field:Sprite = new Sprite;
 
 		public var unit_array:Array = [];
 
@@ -22,6 +24,10 @@
 
 		public function ToV()
 		{
+			init();
+		}
+		
+		public function init():void{
 			addbase();
 			generateui();
 
@@ -30,48 +36,53 @@
 
 		public function addbase():void
 		{
-			addChild(base);
+			field.addChild(base);
+			addChild(field);
+			base.width = 160 * 0.9;
+			base.height = 230 * 0.9;
 			base.x = base.width / 2;
 			base.y = base.height / 2;
 
 			spawn_x = base.x;
 			spawn_y = base.y * 2.2;
 		}
+		
+		public function addIcon(x,y):Sprite{
+			var ui_icon:Sprite = y  ;
+			ui_icon.width = GameData.ICONSIZE;
+			ui_icon.height = GameData.ICONSIZE;
+			ui_icon.x = (ui_icon.width / 2)+(GameData.ICONSIZE*GameData.ICONS);
+			ui_icon.y = (ui_icon.height / 2);
+			ui_icon.addEventListener(MouseEvent.CLICK, 
+				function create_0(e:MouseEvent):void {
+				CREATING_INF=true;
+				spawn(x);
+				CREATING_INF=false;
+				});
+			GameData.ICONS += 1;
+			return ui_icon;
+		}
 
 		public function generateui():void
 		{
+			var uniformSize:int = 50;
 			var ui_holder:Sprite = new Sprite  ;
-			var ui_grenadier:Sprite = new icon_grenadier  ;
-			ui_grenadier.x = (ui_grenadier.width / 2);
-			ui_grenadier.y = (ui_grenadier.height / 2);
-			ui_holder.addChild(ui_grenadier);
 			
-			var ui_scoutcar:Sprite = new icon_scoutcar  ;
-			ui_scoutcar.x = ui_grenadier.width+(ui_scoutcar.width / 2);
-			ui_scoutcar.y = (ui_scoutcar.height / 2);
-			ui_holder.addChild(ui_scoutcar);
+			ui_holder.addChild(addIcon("guard", new icon_guard));
+			ui_holder.addChild(addIcon("grenadier", new icon_grenadier));
+			ui_holder.addChild(addIcon("scoutcar", new icon_scoutcar));
+			
+			
 			
 			addChild(ui_holder);
 
 			ui_holder.y = STAGE_HEIGHT - ui_holder.height;
-
-			ui_grenadier.addEventListener(MouseEvent.MOUSE_UP, 
-				function create_0(e:MouseEvent):void {
-				CREATING_INF=true;
-				spawn("grenadier");
-				CREATING_INF=false;
-				});
-			ui_scoutcar.addEventListener(MouseEvent.MOUSE_UP, 
-				function create_0(e:MouseEvent):void {
-				CREATING_INF=true;
-				spawn("scoutcar");
-				CREATING_INF=false;
-				});
-
+			
 			status = new TextField();
-			status.width = 400;
+			status.width = 300;
 			status.x = STAGE_WIDTH - status.width;
 			status.text = String(0);
+			status.selectable = false;
 			stage.addChild(status);
 			addEventListener(Event.ENTER_FRAME,loop);
 		}
@@ -91,7 +102,7 @@
 			ent.x = ent.Move_x;
 			ent.Move_y = spawn_y;
 			ent.y = ent.Move_y;
-			addChild(ent);
+			field.addChild(ent);
 		}
 
 		private function onMouseReleaseOutside(e:MouseEvent):void

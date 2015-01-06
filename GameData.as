@@ -5,12 +5,19 @@
 	public class GameData {
 
 		public function GameData(stage) {
+			// constructor code
 		}
+		
+		public static var STAGE_WIDTH:int = 800;
+		public static var STAGE_HEIGHT:int = 450;
 		
 		public static var SELECTED:int = -1;
 		public static var SEL_x:Number = 0;
 		public static var SEL_rot:Number = 0;
 		public static var SEL_speed:Number = 0;
+		
+		public static var ICONSIZE:Number = 50;
+		public static var ICONS:int = 0;
 	}
 	
 }

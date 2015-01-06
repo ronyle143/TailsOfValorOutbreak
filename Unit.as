@@ -21,16 +21,9 @@
 		public var tolerance:Number = 5;
 		
 		public function Unit(ent_id:String="grenadier") {
-			switch(ent_id){
-				case "grenadier":
-					ent = new grenadier;
-					speed = 1;
-					break;
-				case "scoutcar":
-					ent = new scoutcar;
-					speed = 3;
-					break;
-			}
+			ent = UnitType.getSprite(ent_id);
+			speed = UnitType.speed;
+			
 			
 			addChild(ent);
 			
@@ -44,22 +37,24 @@
 		}
 		
 		public function move(e:Event):void{
-			var xdis:Number = Move_x + 12.5 - this.x;
-			var ydis:Number = Move_y + 12.5 - this.y;
+			var xdis:Number = Move_x  - this.x;
+			var ydis:Number = Move_y  - this.y;
 			var disangle:Number = Math.atan2(ydis,xdis);
 			
 			xspd=Math.cos(disangle) * speed;
 			yspd=Math.sin(disangle) * speed;
 			
-			/*if((this.x < (this.x + tolerance)) && (this.x > (this.x - tolerance))){
-				this.x+= xspd;
+			/*if((this.y < Move_y -tolerance) || (this.y > Move_y +tolerance)){
 				this.y+= yspd;
-			}*/
+			}
+			if((this.x < Move_x -tolerance) || (this.x > Move_x +tolerance)){
+				this.x+= xspd;
+			}//*/
 			
-			if(this.y < Move_y -tolerance){
+			if(this.y < Move_y +tolerance){
 				this.y+= yspd;
 			}else
-			if(this.y > Move_y +tolerance){
+			if(this.y > Move_y -tolerance){
 				this.y+= yspd;
 			}
 			if(this.x < Move_x -tolerance){
@@ -105,7 +100,7 @@
 			// convert to degrees to rotate
 			var Degrees:Number = Radians * 180 / Math.PI;
 			// rotate
-			this.rotation = Degrees+90;
+			ent.rotation = Degrees+90;
 		}
 	}
 }
