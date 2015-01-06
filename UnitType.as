@@ -14,7 +14,7 @@
 			var ent:Sprite = new Sprite;
 			switch(ent_id){
 				case "guard":
-					ent = new field_wyatt;
+					ent = new field_guard;
 					speed = 1;
 					break;
 				case "grenadier":
