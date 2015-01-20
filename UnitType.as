@@ -25,6 +25,10 @@
 					ent = new field_scoutcar;
 					speed = 3;
 					break;
+				case "wyatt":
+					ent = new field_wyatt;
+					speed = 1.2;
+					break;
 			}
 			return ent;
 		}

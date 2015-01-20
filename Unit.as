@@ -12,8 +12,11 @@
 		public var SELECTED:Boolean = false;
 		public var UNIT_ID:int = 0;
 		
-		public var Move_x:int;
-		public var Move_y:int;
+		public var Move_x:Number;
+		public var Move_y:Number;
+		
+		public var FldX:Number;
+		public var FldY:Number;
 		
 		public var speed:Number = 1;
 		public var xspd:Number;
@@ -34,11 +37,13 @@
 		public function selected(e:MouseEvent):void{
 			SELECTED = true;
 			GameData.SELECTED = UNIT_ID;
+			FldX = GameData.camPosX;
+			FldY = GameData.camPosY;
 		}
 		
 		public function move(e:Event):void{
-			var xdis:Number = Move_x  - this.x;
-			var ydis:Number = Move_y  - this.y;
+			var xdis:Number = Move_x  - this.x - GameData.camPosX;
+			var ydis:Number = Move_y  - this.y - GameData.camPosY;
 			var disangle:Number = Math.atan2(ydis,xdis);
 			
 			xspd=Math.cos(disangle) * speed;

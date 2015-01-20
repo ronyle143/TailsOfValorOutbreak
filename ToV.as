@@ -12,6 +12,7 @@
 		public var CREATING_INF:Boolean = false;
 
 		public var base:Sprite = new field_barracks  ;
+		public var map:Sprite = new maps;
 		public var spawn_x:Number = 0;
 		public var spawn_y:Number = 0;
 
@@ -31,11 +32,18 @@
 			addbase();
 			generateui();
 
-			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseReleaseOutside);
+			field.addEventListener(MouseEvent.MOUSE_UP, onMouseReleaseInside);
+			stage.addEventListener(Event.ENTER_FRAME, keyBind);
+		}
+		
+		public function keyBind(e:Event):void{
+			stage.addEventListener( KeyboardEvent.KEY_DOWN, onKeyPress );
+			stage.addEventListener( KeyboardEvent.KEY_UP, onKeyRelease );
 		}
 
 		public function addbase():void
 		{
+			field.addChild(map);
 			field.addChild(base);
 			addChild(field);
 			base.width = 160 * 0.9;
@@ -71,7 +79,7 @@
 			ui_holder.addChild(addIcon("guard", new icon_guard));
 			ui_holder.addChild(addIcon("grenadier", new icon_grenadier));
 			ui_holder.addChild(addIcon("scoutcar", new icon_scoutcar));
-			
+			ui_holder.addChild(addIcon("wyatt", new icon_wyatt));
 			
 			
 			addChild(ui_holder);
@@ -88,10 +96,97 @@
 		}
 		
 		public function loop(e:Event):void{
-			ToV.status.text = "["+unit_array.length+"]"+GameData.SELECTED + 
-			"\n <"+GameData.SEL_rot+"> ROTATION" + 
-			"\n <"+GameData.SEL_x+"> PERCENT" +
-			"\n {"+GameData.SEL_speed+"} SPEED";
+			
+			if(field.x <= 1  && field.x >= (-map.width+STAGE_WIDTH)){
+				if(GameData.camMoveX == "left"){
+						field.x += GameData.camSpeed;
+						GameData.camPosX = field.x;
+				}else if(GameData.camMoveX == "right"){
+						field.x -= GameData.camSpeed;
+						GameData.camPosX = field.x;
+				}
+				if(!(field.x < 0 )){
+					field.x=0;
+					GameData.camPosX = field.x;
+				}
+				if(!(field.x > (-map.width+STAGE_WIDTH))){
+						field.x=(-map.width+STAGE_WIDTH);
+						GameData.camPosY = field.y;
+				}
+			}
+			
+			if(field.y <= 1 && field.y >= (-map.height+STAGE_HEIGHT)){
+				if(GameData.camMoveY == "up"){
+						field.y += GameData.camSpeed;
+						GameData.camPosY = field.y;
+				}else if(GameData.camMoveY == "down"){
+						field.y -= GameData.camSpeed;
+						GameData.camPosY = field.y;
+				}
+				if(!(field.y < 0 )){
+						field.y=0;
+						GameData.camPosY = field.y;
+				}
+				if(!(field.y > (-map.height+STAGE_HEIGHT))){
+						field.y=(-map.height+STAGE_HEIGHT);
+						GameData.camPosY = field.y;
+				}
+			}
+			
+			
+			ToV.status.text = "["+unit_array.length+"]"+GameData.SELECTED +
+			"\n {"+GameData.SEL_speed+"} SPEED" +
+			"\n X="+GameData.camPosX+
+			"\n Y="+GameData.camPosY+
+			"\n D="+GameData.Diff ;
+		}
+		
+		public function onKeyPress( e:KeyboardEvent ):void{
+				// [A] or [<]
+				if ( e.keyCode == 65 || e.keyCode == 37 )
+				{
+					GameData.camMoveX = "left";
+				}else
+				// [D] or [>]
+				if ( e.keyCode == 68 || e.keyCode == 39 )
+				{
+					GameData.camMoveX = "right";
+				}
+				
+				// [W] or [^]
+				if ( e.keyCode == 87 || e.keyCode == 38 )
+				{
+					GameData.camMoveY = "up";
+				}else
+				// [S] or [v]
+				if ( e.keyCode == 83 || e.keyCode == 40 )
+				{
+					GameData.camMoveY = "down";
+				}
+		}
+		
+		public function onKeyRelease( e:KeyboardEvent ):void{
+				// [A] or [<]
+				if ( e.keyCode == 65 || e.keyCode == 37 )
+				{
+					GameData.camMoveX = "";
+				}else
+				// [D] or [>]
+				if ( e.keyCode == 68 || e.keyCode == 39 )
+				{
+					GameData.camMoveX = "";
+				}
+				
+				// [W] or [^]
+				if ( e.keyCode == 87 || e.keyCode == 38 )
+				{
+					GameData.camMoveY = "";
+				}else
+				// [S] or [v]
+				if ( e.keyCode == 83 || e.keyCode == 40 )
+				{
+					GameData.camMoveY = "";
+				}
 		}
 
 		public function spawn(ent_id:String):void
@@ -105,17 +200,16 @@
 			field.addChild(ent);
 		}
 
-		private function onMouseReleaseOutside(e:MouseEvent):void
+		private function onMouseReleaseInside(e:MouseEvent):void
 		{
 			if (GameData.SELECTED >= 0)
 			{
 				unit_array[GameData.SELECTED].Move_x = mouseX;
+				GameData.Diff = (field.x - unit_array[GameData.SELECTED].FldX);
 				unit_array[GameData.SELECTED].Move_y = mouseY;
 				unit_array[GameData.SELECTED].face();
 				unit_array[GameData.SELECTED].SELECTED = false;
-				GameData.SEL_x = unit_array[GameData.SELECTED].calculateX();
-				GameData.SEL_rot = unit_array[GameData.SELECTED].rotation;
-				GameData.SEL_speed = unit_array[GameData.SELECTED].speed * GameData.SEL_x;
+				GameData.SEL_speed = unit_array[GameData.SELECTED].speed;
 				GameData.SELECTED = -1;
 			}
 		}
