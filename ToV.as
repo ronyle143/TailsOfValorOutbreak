@@ -198,6 +198,7 @@
 			ent.Move_y = spawn_y;
 			ent.y = ent.Move_y;
 			field.addChild(ent);
+			ent.MOVING=false;
 		}
 
 		private function onMouseReleaseInside(e:MouseEvent):void

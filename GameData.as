@@ -24,6 +24,7 @@
 		
 		public static var ICONSIZE:Number = 50;
 		public static var ICONS:int = 0;
+		public static var ENTITYSIZE:Number = 1.5;
 	}
 	
 }

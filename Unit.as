@@ -10,6 +10,7 @@
 		public var ent:Sprite;
 		
 		public var SELECTED:Boolean = false;
+		public var MOVING:Boolean = false;
 		public var UNIT_ID:int = 0;
 		
 		public var Move_x:Number;
@@ -23,7 +24,7 @@
 		public var yspd:Number;
 		public var tolerance:Number = 5;
 		
-		public function Unit(ent_id:String="grenadier") {
+		public function Unit(ent_id:String="guard") {
 			ent = UnitType.getSprite(ent_id);
 			speed = UnitType.speed;
 			
@@ -42,6 +43,9 @@
 		}
 		
 		public function move(e:Event):void{
+			MOVING=true;
+			var MX:Boolean=false;
+			var MY:Boolean=false;
 			var xdis:Number = Move_x  - this.x - GameData.camPosX;
 			var ydis:Number = Move_y  - this.y - GameData.camPosY;
 			var disangle:Number = Math.atan2(ydis,xdis);
@@ -55,19 +59,30 @@
 			if((this.x < Move_x -tolerance) || (this.x > Move_x +tolerance)){
 				this.x+= xspd;
 			}//*/
-			
-			if(this.y < Move_y +tolerance){
-				this.y+= yspd;
-			}else
-			if(this.y > Move_y -tolerance){
-				this.y+= yspd;
+			if(MOVING){
+				if(this.y < Move_y +tolerance){
+					this.y+= yspd;
+				}else
+				if(this.y > Move_y -tolerance){
+					this.y+= yspd;
+				}else{
+					MX=true;
+				}
+				
+				if(this.x < Move_x -tolerance){
+					this.x+= xspd;
+				}else
+				if(this.x > Move_x +tolerance){
+					this.x+= xspd;
+				}else{
+					MY=true;
+				}
+				
+				if(MX && MY){
+					MOVING=false;
+				}
 			}
-			if(this.x < Move_x -tolerance){
-				this.x+= xspd;
-			}else
-			if(this.x > Move_x +tolerance){
-				this.x+= xspd;
-			}//*/
+				//*/
 			
 			/*if(this.y < Move_y -tolerance){
 				this.y += speed * (1 - calculateX());

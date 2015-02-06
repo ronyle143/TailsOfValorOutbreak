@@ -30,6 +30,8 @@
 					speed = 1.2;
 					break;
 			}
+			ent.scaleX = GameData.ENTITYSIZE;
+			ent.scaleY = GameData.ENTITYSIZE;
 			return ent;
 		}
 
